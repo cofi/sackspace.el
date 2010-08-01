@@ -43,12 +43,13 @@ tab, kill that tab."
          (max-back (if (= tab-off 0)
                        4
                      tab-off))
-         (min-col (- (current-column) max-back))
+         (min-col (max 0 (- (current-column) max-back)))
          (tab? (looking-back "\t" min-col))
          (whitespace? (looking-back " " min-col)))
-    (if (or tab? (not whitespace?))
-            (backward-delete-char 1))
-     (backward-delete-char max-back)))
+    (cond
+     ((or tab? (not whitespace?) (bolp))
+      (backward-delete-char 1))
+     (t (backward-delete-char max-back)))))
 
 (defun sack/hyper-sack ()
   "Kill all whitespace before point."
