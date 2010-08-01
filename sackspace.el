@@ -82,7 +82,8 @@ On preceding non-space delete that char."
            (backward-delete-char 1))))
 
 (defun sack/hyper-sack ()
-  "Kill all whitespace before point."
+  "Kill all whitespace before point.
+Kills at least 1 char (including non-whitespace)."
   (interactive)
   (let ((start (point)))
     (skip-chars-backward " \t\r\n")
