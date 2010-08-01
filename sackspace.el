@@ -3,8 +3,8 @@
 ;; Copyright (C) 2010 by Michael Markert
 ;; Author: 2010 Michael Markert <markert.michael@googlemail.com>
 ;; Created: 2010/08/01
-;; Version: 0.2
-;; Last modified: 2010-08-01 17:41:13 +0200
+;; Version: 0.3
+;; Last modified: 2010-08-01 18:32:58 +0200
 ;; Keywords: delete
 
 ;; This file is not part of GNU Emacs.
@@ -30,9 +30,6 @@
 ;; Homepage: http://github.com/cofi/sackspace.el
 ;; Git-Repository: git://github.com/cofi/sackspace.el.git
 
-;; TODO: Add custom for
-;; - hyper-sack (function to use if sack/backspace is called with prefix)
-
 (defgroup sackspace nil
   "A better backspace."
   :tag "Sackspace"
@@ -46,6 +43,11 @@
                  (const :tag "Delete just one char" sack/plain)
                  (const :tag "Delete just one char (but untabify before)"
                         sack/plain-space))
+  :group 'sackspace)
+
+(defcustom sack/prefix-backspace 'sack/hyper-sack
+  "Function to call if sack/backspace is called with prefix"
+  :type 'function
   :group 'sackspace)
 
 (defun sack/plain ()
@@ -79,11 +81,11 @@ On preceding non-space delete that char."
       (backward-delete-char 1))))
 
 (defun sack/backspace (prefix)
-  "Deletes preceding character or whitespace.
-With prefix use hyper-sack."
+  "Deletes preceding character or whitespace accoring to deletion-style.
+With prefix use prefix-backspace."
   (interactive "P")
   (if prefix
-      (sack/hyper-sack)
+      (funcall sack/prefix-backspace)
     (funcall sack/deletion-style)))
 
 (provide 'sackspace)
