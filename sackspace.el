@@ -4,7 +4,8 @@
 ;; Author: 2010 Michael Markert <markert.michael@googlemail.com>
 ;; Created: 2010/08/01
 ;; Version: 0.3
-;; Last modified: 2010-08-01 18:32:58 +0200
+;; Last modified: 2010-08-01 19:03:47 +0200
+
 ;; Keywords: delete
 
 ;; This file is not part of GNU Emacs.
@@ -26,6 +27,15 @@
 
 ;; Known Bugs:
 ;; See http://github.com/cofi/sackspace.el/issues
+
+;; Usage:
+;; Just load file and bind `sack/backspace' to a key (prefably backspace ;)
+;; `sack/hyper-sack' is available for keybinding as well.
+;; 
+;; ,----
+;; | (require 'sackspace)
+;; | (global-set-key (kbd "<backspace>") 'sack/backspace)
+;; `----
 
 ;; Homepage: http://github.com/cofi/sackspace.el
 ;; Git-Repository: git://github.com/cofi/sackspace.el.git
