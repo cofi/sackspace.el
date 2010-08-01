@@ -3,7 +3,7 @@
 ;; Copyright (C) 2010 by Michael Markert
 ;; Author: 2010 Michael Markert <markert.michael@googlemail.com>
 ;; Created: 2010/08/01
-;; Version: 0.1
+;; Version: 0.2
 ;; Last modified: 2010-08-01 17:41:13 +0200
 ;; Keywords: delete
 
@@ -31,12 +31,22 @@
 ;; Git-Repository: git://github.com/cofi/sackspace.el.git
 
 ;; TODO: Add custom for
-;; - deletion-style
-;;   - plain (one char back)
-;;   - plain-space (one space back - untabify tabs)
-;;   - tabstop (back to last tabstop = multiples of tab-width / kill tab before
-;;     point)
 ;; - hyper-sack (function to use if sack/backspace is called with prefix)
+
+(defgroup sackspace nil
+  "A better backspace."
+  :tag "Sackspace"
+  :link '(url-link :tag "Homepage" "http://github.com/cofi/sackspace.el")
+  :prefix "sack/"
+  :group 'convenience)
+
+(defcustom sack/deletion-style 'sack/tabstop
+  "Delete-Style that Sackspace should use"
+  :type '(choice (const :tag "Delete until Tabstop" sack/tabstop)
+                 (const :tag "Delete just one char" sack/plain)
+                 (const :tag "Delete just one char (but untabify before)"
+                        sack/plain-space))
+  :group 'sackspace)
 
 (defun sack/plain ()
   "Delete just one char."
@@ -77,4 +87,4 @@ With prefix use hyper-sack."
   (interactive "P")
   (if prefix
       (sack/hyper-sack)
-    (sack/tabstop)))
+    (funcall sack/deletion-style)))
