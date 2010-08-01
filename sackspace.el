@@ -3,8 +3,8 @@
 ;; Copyright (C) 2010 by Michael Markert
 ;; Author: 2010 Michael Markert <markert.michael@googlemail.com>
 ;; Created: 2010/08/01
-;; Version: 0.0
-;; Last modified: 2010-08-01 16:31:21 +0200
+;; Version: 0.1
+;; Last modified: 2010-08-01 16:39:10 +0200
 ;; Keywords: delete
 
 ;; This file is not part of GNU Emacs.
@@ -38,3 +38,20 @@ tab, kill that tab."
     (if (or tab? (not whitespace?))
             (backward-delete-char 1))
      (backward-delete-char max-back)))
+
+(defun sack/hyper-sack ()
+  "Kill all whitespace before point."
+  (interactive)
+  (let ((start (point)))
+    (skip-chars-backward " \t\r\n")
+    (if (/= (point) start)
+        (delete-region (point) start)
+      (backward-delete-char 1))))
+
+(defun sack/backspace (prefix)
+  "Deletes preceding character or whitespace.
+With prefix use hyper-sack."
+  (interactive "P")
+  (if prefix
+      (sack/hyper-sack)
+    (sack/tabstop)))
