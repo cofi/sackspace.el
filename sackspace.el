@@ -4,7 +4,7 @@
 ;; Author: 2010 Michael Markert <markert.michael@googlemail.com>
 ;; Created: 2010/08/01
 ;; Version: 0.0
-;; Last modified: 2010-08-01 16:29:36 +0200
+;; Last modified: 2010-08-01 16:31:21 +0200
 ;; Keywords: delete
 
 ;; This file is not part of GNU Emacs.
@@ -23,3 +23,18 @@
 ;; along with GNU Emacs; see the file COPYING.  If not, write to the
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
+
+(defun sack/tabstop ()
+  "Delete preceding whitespace until tabstop.
+On preceding non-whitespace delete that char and on preceding
+tab, kill that tab."
+  (let* ((tab-off (mod (current-column) tab-width))
+         (max-back (if (= tab-off 0)
+                       4
+                     tab-off))
+         (min-col (- (current-column) max-back))
+         (tab? (looking-back "\t" min-col))
+         (whitespace? (looking-back " " min-col)))
+    (if (or tab? (not whitespace?))
+            (backward-delete-char 1))
+     (backward-delete-char max-back)))
