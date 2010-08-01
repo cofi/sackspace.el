@@ -57,20 +57,17 @@
   (backward-delete-char-untabify 1))
 
 (defun sack/tabstop ()
-  "Delete preceding whitespace until tabstop.
-On preceding non-whitespace delete that char and on preceding
-tab, kill that tab."
-  (let* ((tab-off (mod (current-column) tab-width))
+  "Delete preceding space until tabstop.
+On preceding non-space delete that char."
+  (let* ((start (point))
+         (tab-off (mod (current-column) tab-width))
          (max-back (if (= tab-off 0)
                        4
-                     tab-off))
-         (min-col (max 0 (- (current-column) max-back)))
-         (tab? (looking-back "\t" min-col))
-         (whitespace? (looking-back " " min-col)))
-    (cond
-     ((or tab? (not whitespace?) (bolp))
-      (backward-delete-char 1))
-     (t (backward-delete-char max-back)))))
+                     tab-off)))
+         (skip-chars-backward " " (- start max-back))
+         (if (/= (point) start)
+             (delete-region (point) start)
+           (backward-delete-char 1))))
 
 (defun sack/hyper-sack ()
   "Kill all whitespace before point."
