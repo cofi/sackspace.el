@@ -62,7 +62,7 @@ On preceding non-space delete that char."
   (let* ((start (point))
          (tab-off (mod (current-column) tab-width))
          (max-back (if (= tab-off 0)
-                       4
+                       tab-width
                      tab-off)))
          (skip-chars-backward " " (- start max-back))
          (if (/= (point) start)
