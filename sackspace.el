@@ -85,3 +85,5 @@ With prefix use hyper-sack."
   (if prefix
       (sack/hyper-sack)
     (funcall sack/deletion-style)))
+
+(provide 'sackspace)
