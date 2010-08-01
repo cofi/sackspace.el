@@ -24,6 +24,14 @@
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
+;; TODO: Add custom for
+;; - deletion-style
+;;   - plain (one char back)
+;;   - plain-space (one space back - untabify tabs)
+;;   - tabstop (back to last tabstop = multiples of tab-width / kill tab before
+;;     point)
+;; - hyper-sack (function to use if sack/backspace is called with prefix)
+
 (defun sack/tabstop ()
   "Delete preceding whitespace until tabstop.
 On preceding non-whitespace delete that char and on preceding
