@@ -24,6 +24,9 @@
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
+;; Homepage: http://github.com/cofi/sackspace.el
+;; Git-Repository: git://github.com/cofi/sackspace.el.git
+
 ;; TODO: Add custom for
 ;; - deletion-style
 ;;   - plain (one char back)
