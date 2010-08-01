@@ -4,7 +4,7 @@
 ;; Author: 2010 Michael Markert <markert.michael@googlemail.com>
 ;; Created: 2010/08/01
 ;; Version: 0.1
-;; Last modified: 2010-08-01 16:39:10 +0200
+;; Last modified: 2010-08-01 17:41:13 +0200
 ;; Keywords: delete
 
 ;; This file is not part of GNU Emacs.
@@ -34,6 +34,14 @@
 ;;   - tabstop (back to last tabstop = multiples of tab-width / kill tab before
 ;;     point)
 ;; - hyper-sack (function to use if sack/backspace is called with prefix)
+
+(defun sack/plain ()
+  "Delete just one char."
+  (backward-delete-char 1))
+
+(defun sack/plain-space ()
+  "Delete just one char (untabify tabs before)."
+  (backward-delete-char-untabify 1))
 
 (defun sack/tabstop ()
   "Delete preceding whitespace until tabstop.
