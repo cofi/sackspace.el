@@ -1,4 +1,3 @@
-<!-- -*- mode: markdown -*- -->
 Install
 =======
 
@@ -33,7 +32,6 @@ Indirect:
    **Workaround**:
    Bind a new key for `'ido-up-directory` like following for Up-Arrow
    
-    (add-hook 'ido-setup-hook
-       (lambda ()
-         (define-key ido-file-dir-completion-map (kbd "<up>")
-                                                 'ido-up-directory)))
+    (add-hook 'ido-setup-hook (lambda ()
+                                (define-key ido-file-dir-completion-map
+                                  (kbd "<up>") 'ido-up-directory)))
