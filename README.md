@@ -1,12 +1,12 @@
 <!-- -*- mode: markdown -*- -->
 Install
--------
+=======
 
 Put `sackspace.el` into your `load-path`.
 (`make compile` will give you a byte-compiled version)
 
 Usage
------
+=====
 
 Just load file and bind `sack/backspace` to a key (prefably backspace ;)
 `sack/hyper-sack` is available for keybinding as well.
@@ -18,7 +18,9 @@ Issues with other Packages
 ==========================
 
 Direct: None.
+
 Indirect:
+
  * Viper+Ido
    If you bind Sackspace in Insert-Mode like
 
@@ -27,6 +29,7 @@ Indirect:
 
    you will encounter Problems with Ido, because those bindings facade somehow
    those in `'ido-file-dir-completion-map`.
+
    **Workaround**:
    Bind a new key for `'ido-up-directory` like following for Up-Arrow
    
