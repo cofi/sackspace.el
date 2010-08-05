@@ -26,12 +26,8 @@ Indirect:
     (define-key viper-insert-global-user-map (kbd "<backspace>") 'sack/backspace)
     (define-key viper-insert-global-user-map (kbd "C-<backspace>") 'sack/hyper-sack))
 
-   you will encounter Problems with Ido, because those bindings facade somehow
-   those in `'ido-file-dir-completion-map`.
-
-   **Workaround**:
-   Bind a new key for `'ido-up-directory` like following for Up-Arrow
-   
-`    (add-hook 'ido-setup-hook
-      (define-key ido-file-dir-completion-map (kbd "<up>")
-                                              'ido-up-directory)))`
+   you will encounter Problems with Ido if `viper-vi-style-in-minibuffer' is
+   non-nil, because those will then facade the Ido-Bindings.
+   Put 
+    (setq viper-vi-style-in-minibuffer nil)
+   in your ~/.viper to workaround that behaviour.
