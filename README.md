@@ -20,14 +20,18 @@ Direct: None.
 
 Indirect:
 
- * Viper+Ido
-   If you bind Sackspace in Insert-Mode like
+* Viper
+
+If you bind Sackspace in Insert-Mode like
 
     (define-key viper-insert-global-user-map (kbd "<backspace>") 'sack/backspace)
     (define-key viper-insert-global-user-map (kbd "C-<backspace>") 'sack/hyper-sack))
 
-   you will encounter Problems with Ido if `viper-vi-style-in-minibuffer' is
-   non-nil, because those will then facade the Ido-Bindings.
-   Put 
+you will encounter Problems if `viper-vi-style-in-minibuffer' is non-nil,
+because those facade bindings (like those of Ido) in the minibuffer.
+
+Put
+
     (setq viper-vi-style-in-minibuffer nil)
-   in your ~/.viper to workaround that behaviour.
+
+in your ~/.viper to prevent that behaviour.
