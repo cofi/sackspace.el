@@ -33,7 +33,7 @@
 ;; All `sack' functions are available for use as well.
 ;;
 ;; Usage:
-;; TODO: add doc
+;; See readme.
 
 ;; Homepage: http://github.com/cofi/sackspace.el
 ;; Git-Repository: git://github.com/cofi/sackspace.el.git
@@ -49,22 +49,14 @@
   :prefix "sack/"
   :group 'convenience)
 
-(defcustom sack/keys '("<backspace>"
-                       "C-<backspace>"
-                       "M-<backspace>"
-                       "S-<backspace>")
-  "Keys sackspace should install to.
-Value must be a string that can be interpreted by `read-kbd-macro'.
-By default Backspace, Control-Backspace, Meta-Backspace and Shift-Backspace."
-  :type '(repeat :args (string)))
-
-(defcustom sack/fun '(sack/tabstop
-                      sack/word
-                      sack/plain
-                      sack/whitespace)
-  "Functions sackspace should install.
-By default `sack/tabstop', `sack/word', `sack/plain' and `sack/whitespace'."
-  :type '(repeat function)
+;; TODO: switch to choice/function-item widget
+(defcustom sack/key-bindings '(("<backspace>" . sack/tabstop)
+                               ("C-<backspace>" . sack/word)
+                               ("M-<backspace>" . sack/plain)
+                               ("S-<backspace>" . sack/whitespace))
+  "Keybindings sackspace should install.
+Keys must be strings that can be interpreted by `read-kbd-macro'."
+  :type '(repeat (cons :tag "Keybinding" string function))
   :group 'sackspace)
 
 (defcustom sack/backward-word (function backward-kill-word)
@@ -91,7 +83,7 @@ Set `sack/force-viper-install' to non-nil if you want it nevertheless."))
   (mapc (lambda (pair)
           (define-key viper-insert-global-user-map (read-kbd-macro (car pair))
                                                    (cdr pair)))
-        (pairlis sack/keys sack/fun)))
+        sack/key-bindings))
 
 (defun sack/install-in-emacs ()
   "Install keys appropriate for normal Emacs.
@@ -99,7 +91,7 @@ Bind selected functions to selected keys via `global-set-key'."
   (interactive)
   (mapc (lambda (pair)
           (global-set-key (read-kbd-macro (car pair)) (cdr pair)))
-        (pairlis sack/keys sack/fun)))
+        sack/key-bindings))
 ;; ==================================================
 
 ;; Functions ========================================
