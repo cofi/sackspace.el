@@ -42,8 +42,6 @@
   (require 'cl))
 
 ;; User-defined Variables ========================================
-
-;; TODO: Replace vars with customs
 (defgroup sackspace nil
   "A better backspace."
   :tag "Sackspace"
@@ -51,25 +49,34 @@
   :prefix "sack/"
   :group 'convenience)
 
-(defvar sack/keys (list (kbd "<backspace>")
-                        (kbd "C-<backspace>")
-                        (kbd "M-<backspace>")
-                        (kbd "S-<backspace>"))
+(defcustom sack/keys '("<backspace>"
+                       "C-<backspace>"
+                       "M-<backspace>"
+                       "S-<backspace>")
   "Keys sackspace should install to.
-By default Backspace, Control-Backspace, Meta-Backspace and Shift-Backspace.")
+Value must be a string that can be interpreted by `read-kbd-macro'.
+By default Backspace, Control-Backspace, Meta-Backspace and Shift-Backspace."
+  :type '(repeat :args (string)))
 
-(defvar sack/fun '(sack/tabstop
-                   sack/word
-                   sack/plain
-                   sack/whitespace)
+(defcustom sack/fun '(sack/tabstop
+                      sack/word
+                      sack/plain
+                      sack/whitespace)
   "Functions sackspace should install.
-By default `sack/tabstop', `sack/word', `sack/plain' and `sack/whitespace'.")
+By default `sack/tabstop', `sack/word', `sack/plain' and `sack/whitespace'."
+  :type '(repeat function)
+  :group 'sackspace)
 
-(defvar sack/backward-word (function backward-kill-word)
-  "Function to use for removing a word backward.")
-(defvar sack/force-viper-install nil
+(defcustom sack/backward-word (function backward-kill-word)
+  "Function to use for removing a word backward."
+  :type 'function
+  :group 'sackspace)
+
+(defcustom sack/force-viper-install nil
   "Install viper-keys even if `viper-vi-style-in-minibuffer' is non-nil.
-WARNING: This maybe leads to unwanted behavior.")
+WARNING: This maybe leads to unwanted behavior."
+  :type 'boolean
+  :group 'sackspace)
 ;; ==================================================
 
 ;; Installer ========================================
@@ -82,7 +89,8 @@ Binds selected functions to selected keys in `viper-insert-global-user-map'."
     (error "Refuse to install keys, because it could lead to unwanted behavior.\
 Set `sack/force-viper-install' to non-nil if you want it nevertheless."))
   (mapc (lambda (pair)
-          (define-key viper-insert-global-user-map (car pair) (cdr pair)))
+          (define-key viper-insert-global-user-map (read-kbd-macro (car pair))
+                                                   (cdr pair)))
         (pairlis sack/keys sack/fun)))
 
 (defun sack/install-in-emacs ()
@@ -90,7 +98,7 @@ Set `sack/force-viper-install' to non-nil if you want it nevertheless."))
 Bind selected functions to selected keys via `global-set-key'."
   (interactive)
   (mapc (lambda (pair)
-          (global-set-key (car pair) (cdr pair)))
+          (global-set-key (read-kbd-macro (car pair)) (cdr pair)))
         (pairlis sack/keys sack/fun)))
 ;; ==================================================
 
