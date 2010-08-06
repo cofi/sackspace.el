@@ -40,6 +40,9 @@
 ;; Homepage: http://github.com/cofi/sackspace.el
 ;; Git-Repository: git://github.com/cofi/sackspace.el.git
 
+(eval-when-compile
+  (require 'cl))
+
 ;; User-defined Variables ========================================
 
 ;; TODO: Replace vars with customs
@@ -69,6 +72,28 @@ By default `sack/tabstop', `sack/word', `sack/plain' and `sack/whitespace'.")
 (defvar sack/force-viper-install nil
   "Install viper-keys even if `viper-vi-style-in-minibuffer' is non-nil.
 WARNING: This maybe leads to unwanted behavior.")
+;; ==================================================
+
+;; Installer ========================================
+(defun sack/install-in-viper ()
+  "Install keys appropriate for viper.
+Binds selected functions to selected keys in `viper-insert-global-user-map'."
+  (interactive)
+  (if (and viper-vi-style-in-minibuffer
+           (not sack/force-viper-install))
+    (error "Refuse to install keys, because it could lead to unwanted behavior.\
+Set `sack/force-viper-install' to non-nil if you want it nevertheless."))
+  (mapc (lambda (pair)
+          (define-key viper-insert-global-user-map (car pair) (cdr pair)))
+        (pairlis sack/keys sack/fun)))
+
+(defun sack/install-in-emacs ()
+  "Install keys appropriate for normal Emacs.
+Bind selected functions to selected keys via `global-set-key'."
+  (interactive)
+  (mapc (lambda (pair)
+          (global-set-key (car pair) (cdr pair)))
+        (pairlis sack/keys sack/fun)))
 ;; ==================================================
 
 ;; Functions ========================================
