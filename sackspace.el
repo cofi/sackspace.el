@@ -40,6 +40,9 @@
 ;; Homepage: http://github.com/cofi/sackspace.el
 ;; Git-Repository: git://github.com/cofi/sackspace.el.git
 
+;; User-defined Variables ========================================
+
+;; TODO: Replace vars with customs
 (defgroup sackspace nil
   "A better backspace."
   :tag "Sackspace"
@@ -47,18 +50,26 @@
   :prefix "sack/"
   :group 'convenience)
 
-(defcustom sack/deletion-style 'sack/tabstop
-  "Delete-Style that Sackspace should use"
-  :type '(choice (const :tag "Delete until Tabstop" sack/tabstop)
-                 (const :tag "Delete just one char" sack/plain)
-                 (const :tag "Delete just one char (but untabify before)"
-                        sack/plain-space))
-  :group 'sackspace)
+(defvar sack/keys (list (kbd "<backspace>")
+                        (kbd "C-<backspace>")
+                        (kbd "M-<backspace>")
+                        (kbd "S-<backspace>"))
+  "Keys sackspace should install to.
+By default Backspace, Control-Backspace, Meta-Backspace and Shift-Backspace.")
 
-(defcustom sack/prefix-backspace 'sack/hyper-sack
-  "Function to call if sack/backspace is called with prefix"
-  :type 'function
-  :group 'sackspace)
+(defvar sack/fun '(sack/tabstop
+                   sack/word
+                   sack/plain
+                   sack/whitespace)
+  "Functions sackspace should install.
+By default `sack/tabstop', `sack/word', `sack/plain' and `sack/whitespace'.")
+
+(defvar sack/backward-word (function backward-kill-word)
+  "Function to use for removing a word backward.")
+(defvar sack/force-viper-install nil
+  "Install viper-keys even if `viper-vi-style-in-minibuffer' is non-nil.
+WARNING: This maybe leads to unwanted behavior.")
+;; ==================================================
 
 ;; Functions ========================================
 (defun sack/word (&optional words)
