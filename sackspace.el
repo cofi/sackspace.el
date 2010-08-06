@@ -4,7 +4,7 @@
 ;; Author: 2010 Michael Markert <markert.michael@googlemail.com>
 ;; Created: 2010/08/01
 ;; Version: 0.3
-;; Last modified: 2010-08-01 19:03:47 +0200
+;; Time-stamp: <2010-08-07 00:18:27 cofi>
 
 ;; Keywords: delete
 
@@ -28,14 +28,12 @@
 ;; Known Bugs:
 ;; See http://github.com/cofi/sackspace.el/issues
 
+;; Install:
+;; Just load file and run `sack/install-in-viper' or `sack/install-in-emacs'.
+;; All `sack' functions are available for use as well.
+;;
 ;; Usage:
-;; Just load file and bind `sack/backspace' to a key (prefably backspace ;)
-;; `sack/hyper-sack' is available for keybinding as well.
-;; 
-;; ,----
-;; | (require 'sackspace)
-;; | (global-set-key (kbd "<backspace>") 'sack/backspace)
-;; `----
+;; TODO: add doc
 
 ;; Homepage: http://github.com/cofi/sackspace.el
 ;; Git-Repository: git://github.com/cofi/sackspace.el.git
