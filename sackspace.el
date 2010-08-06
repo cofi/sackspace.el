@@ -60,43 +60,47 @@
   :type 'function
   :group 'sackspace)
 
-(defun sack/plain ()
-  "Delete just one char."
-  (backward-delete-char 1))
+;; Functions ========================================
+(defun sack/word (&optional words)
+  "Kill words."
+  (interactive "p")
+  (funcall sack/backward-word words))
 
-(defun sack/plain-space ()
-  "Delete just one char (untabify tabs before)."
-  (backward-delete-char-untabify 1))
+(defun sack/plain (&optional chars)
+  "Delete `chards' chars."
+  (interactive "p")
+  (backward-delete-char (or chars 1)))
 
-(defun sack/tabstop ()
-  "Delete preceding space until tabstop.
-On preceding non-space delete that char."
+(defun sack/plain-space (&optional chars)
+  "Delete `chars' chars (untabify tabs before)."
+  (interactive "p")
+  (backward-delete-char-untabify (or chars 1)))
+
+(defun sack/tabstop (&optional count)
+  "Delete preceding space or chars.
+Delete up to `count' times `tab-width' preceding spaces.
+On preceding non-space delete up to `count' chars."
+  (interactive "p")
   (let* ((start (point))
-         (tab-off (mod (current-column) tab-width))
+         (tab-off (mod (current-column)
+                       (* count tab-width)))
          (max-back (if (= tab-off 0)
-                       tab-width
+                       (* count tab-width)
                      tab-off)))
-         (skip-chars-backward " " (- start max-back))
-         (if (/= (point) start)
-             (delete-region (point) start)
-           (backward-delete-char 1))))
+    (skip-chars-backward " " (- start max-back))
+    (if (/= (point) start)
+        (delete-region (point) start)
+      (backward-delete-char count))))
 
-(defun sack/hyper-sack ()
+(defun sack/whitespace (&optional always-delete)
   "Kill all whitespace before point.
-Kills at least 1 char (including non-whitespace)."
-  (interactive)
+Kills at least 1 char if `always-delete' is set (including non-whitespace)."
+  (interactive "P")
   (let ((start (point)))
     (skip-chars-backward " \t\r\n")
     (if (/= (point) start)
         (delete-region (point) start)
-      (backward-delete-char 1))))
-
-(defun sack/backspace (prefix)
-  "Deletes preceding character or whitespace accoring to deletion-style.
-With prefix use prefix-backspace."
-  (interactive "P")
-  (if prefix
-      (funcall sack/prefix-backspace)
-    (funcall sack/deletion-style)))
+      (if always-delete
+          (backward-delete-char 1)))))
 
 (provide 'sackspace)
