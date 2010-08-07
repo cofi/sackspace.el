@@ -14,9 +14,12 @@ Keybindings
 -----------
 
 Backspace       : Delete char backwards or delete back Tabstop [1]
+
 C-Backspace     : Delete word backwards (you can customize delete function) [1]
+
 Alt-Backspace   : Delete char backwards [1]
-Shift-Backspace : Delete all whitespace till no-whitespace char is found.
+
+Shift-Backspace : Delete all whitespace till non-whitespace char is found.
 
 [1] Takes a numeric argument. You can specify how often it will be executed.
 
