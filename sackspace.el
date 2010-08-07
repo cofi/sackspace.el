@@ -4,7 +4,7 @@
 ;; Author: 2010 Michael Markert <markert.michael@googlemail.com>
 ;; Created: 2010/08/01
 ;; Version: 0.3
-;; Time-stamp: <2010-08-07 00:18:27 cofi>
+;; Time-stamp: <2010-08-07 02:13:04 cofi>
 
 ;; Keywords: delete
 
