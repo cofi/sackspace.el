@@ -38,9 +38,6 @@
 ;; Homepage: http://github.com/cofi/sackspace.el
 ;; Git-Repository: git://github.com/cofi/sackspace.el.git
 
-(eval-when-compile
-  (require 'cl))
-
 ;; User-defined Variables ========================================
 (defgroup sackspace nil
   "A better backspace."
