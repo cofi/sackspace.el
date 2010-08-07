@@ -104,7 +104,7 @@ Bind selected functions to selected keys via `global-set-key'."
   (funcall sack/backward-word words))
 
 (defun sack/plain (&optional chars)
-  "Delete `chards' chars."
+  "Delete `chars' chars."
   (interactive "p")
   (backward-delete-char (or chars 1)))
 
