@@ -49,14 +49,17 @@
   :prefix "sack/"
   :group 'convenience)
 
-;; TODO: switch to choice/function-item widget
 (defcustom sack/key-bindings '(("<backspace>" . sack/tabstop)
                                ("C-<backspace>" . sack/word)
                                ("M-<backspace>" . sack/plain)
                                ("S-<backspace>" . sack/whitespace))
   "Keybindings sackspace should install.
 Keys must be strings that can be interpreted by `read-kbd-macro'."
-  :type '(repeat (cons :tag "Keybinding" string function))
+  :type '(repeat (cons :tag "Keybinding" string (choice (function-item sack/tabstop)
+                                                        (function-item sack/word)
+                                                        (function-item sack/plain)
+                                                        (function-item sack/plain-space)
+                                                        (function-item sack/whitespace))))
   :group 'sackspace)
 
 (defcustom sack/backward-word (function backward-kill-word)
