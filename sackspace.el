@@ -3,8 +3,8 @@
 ;; Copyright (C) 2010 by Michael Markert
 ;; Author: 2010 Michael Markert <markert.michael@googlemail.com>
 ;; Created: 2010/08/01
-;; Version: 0.3
-;; Time-stamp: <2010-08-07 02:13:04 cofi>
+;; Version: 0.4.2
+;; Time-stamp: <2010-10-26 21:00:18 cofi>
 
 ;; Keywords: delete
 
@@ -64,6 +64,11 @@ Keys must be strings that can be interpreted by `read-kbd-macro'."
   :type 'function
   :group 'sackspace)
 
+(defcustom sack/honor-subword t
+  "If sackspace should follow `subword-mode'."
+  :type 'boolean
+  :group 'sackspace)
+
 (defcustom sack/force-viper-install nil
   "Install viper-keys even if `viper-vi-style-in-minibuffer' is non-nil.
 WARNING: This maybe leads to unwanted behavior."
@@ -98,7 +103,9 @@ Bind selected functions to selected keys via `global-set-key'."
 (defun sack/word (&optional words)
   "Kill words."
   (interactive "p")
-  (funcall sack/backward-word words))
+  (if (and sack/honor-subword (bound-and-true-p subword-mode))
+      (subword-backward-kill words)
+    (funcall sack/backward-word words)))
 
 (defun sack/plain (&optional chars)
   "Delete `chars' chars."
