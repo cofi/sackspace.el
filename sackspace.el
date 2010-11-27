@@ -165,7 +165,12 @@ Takes action only if `sack/honor-autopair' is non-nil."
         (setq autopair-action (list 'backspace (autopair-find-pair (char-before)) (point)))
         (backward-delete-char 1)
         (delete-char 1)
-        t)                              ; need to signal fun was successful
+        t)                              ; need to signal fun was successful 
     nil))
 
 (provide 'sackspace)
+;; sackspace.el ends here
+
+;; Changelog
+;; 0.4.3: Added support for `autopair'.
+;; 0.4.2: Added support for `subword-mode'.
