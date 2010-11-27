@@ -3,8 +3,8 @@
 ;; Copyright (C) 2010 by Michael Markert
 ;; Author: 2010 Michael Markert <markert.michael@googlemail.com>
 ;; Created: 2010/08/01
-;; Version: 0.4.2
-;; Time-stamp: <2010-10-26 21:00:18 cofi>
+;; Version: 0.4.3
+;; Time-stamp: <2010-11-27 20:23:47 cofi>
 
 ;; Keywords: delete
 
@@ -69,6 +69,11 @@ Keys must be strings that can be interpreted by `read-kbd-macro'."
   :type 'boolean
   :group 'sackspace)
 
+(defcustom sack/honor-autopair t
+  "If sackspace should follow `autopair-mode'"
+  :type 'boolean
+  :group 'sackspace)
+
 (defcustom sack/force-viper-install nil
   "Install viper-keys even if `viper-vi-style-in-minibuffer' is non-nil.
 WARNING: This maybe leads to unwanted behavior."
@@ -101,37 +106,44 @@ Bind selected functions to selected keys via `global-set-key'."
 
 ;; Functions ========================================
 (defun sack/word (&optional words)
-  "Kill words."
+  "Kill words.
+Honors subword-mode (if enabled)."
   (interactive "p")
   (if (and sack/honor-subword (bound-and-true-p subword-mode))
       (subword-backward-kill words)
     (funcall sack/backward-word words)))
 
 (defun sack/plain (&optional chars)
-  "Delete `chars' chars."
+  "Delete `chars' chars.
+Honors autopair (if enabled)."
   (interactive "p")
-  (backward-delete-char (or chars 1)))
+  (unless (sack/autopair-backspace)
+    (backward-delete-char (or chars 1))))
 
 (defun sack/plain-space (&optional chars)
-  "Delete `chars' chars (untabify tabs before)."
+  "Delete `chars' chars (untabify tabs before).
+Honors autopair (if enabled)."
   (interactive "p")
-  (backward-delete-char-untabify (or chars 1)))
+  (unless (sack/autopair-backspace)
+    (backward-delete-char-untabify (or chars 1))))
 
 (defun sack/tabstop (&optional count)
   "Delete preceding space or chars.
 Delete up to `count' times `tab-width' preceding spaces.
-On preceding non-space delete up to `count' chars."
+On preceding non-space delete up to `count' chars.
+Honors autopair (if enabled)."
   (interactive "p")
-  (let* ((start (point))
-         (tab-off (mod (current-column)
-                       (* count tab-width)))
-         (max-back (if (= tab-off 0)
-                       (* count tab-width)
-                     tab-off)))
-    (skip-chars-backward " " (- start max-back))
-    (if (/= (point) start)
-        (delete-region (point) start)
-      (backward-delete-char count))))
+  (unless (sack/autopair-backspace)
+    (let* ((start (point))
+           (tab-off (mod (current-column)
+                         (* count tab-width)))
+           (max-back (if (= tab-off 0)
+                         (* count tab-width)
+                       tab-off)))
+      (skip-chars-backward " " (- start max-back))
+      (if (/= (point) start)
+          (delete-region (point) start)
+        (backward-delete-char count)))))
 
 (defun sack/whitespace (&optional always-delete)
   "Kill all whitespace before point.
@@ -143,5 +155,17 @@ Kills at least 1 char if `always-delete' is set (including non-whitespace)."
         (delete-region (point) start)
       (if always-delete
           (backward-delete-char 1)))))
+
+(defun sack/autopair-backspace ()
+  "Emulates `autopair-backspace'.
+Takes action only if `sack/honor-autopair' is non-nil."
+  (if (and sack/honor-autopair (bound-and-true-p autopair-mode)
+         (autopair-find-pair (char-before)))
+      (progn
+        (setq autopair-action (list 'backspace (autopair-find-pair (char-before)) (point)))
+        (backward-delete-char 1)
+        (delete-char 1)
+        t)                              ; need to signal fun was successful
+    nil))
 
 (provide 'sackspace)
