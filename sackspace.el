@@ -3,8 +3,8 @@
 ;; Copyright (C) 2010 by Michael Markert
 ;; Author: 2010 Michael Markert <markert.michael@googlemail.com>
 ;; Created: 2010/08/01
-;; Version: 0.4.3
-;; Time-stamp: <2010-11-27 20:23:47 cofi>
+;; Version: 0.4.3.1
+;; Time-stamp: <2010-11-27 20:55:39 cofi>
 
 ;; Keywords: delete
 
@@ -163,8 +163,8 @@ Takes action only if `sack/honor-autopair' is non-nil."
          (autopair-find-pair (char-before)))
       (progn
         (setq autopair-action (list 'backspace (autopair-find-pair (char-before)) (point)))
+        (autopair-default-handle-action 'backspace (autopair-find-pair (char-before)) (point))
         (backward-delete-char 1)
-        (delete-char 1)
         t)                              ; need to signal fun was successful 
     nil))
 
@@ -172,5 +172,6 @@ Takes action only if `sack/honor-autopair' is non-nil."
 ;; sackspace.el ends here
 
 ;; Changelog
+;; 0.4.3.1: Fixed `autopair-backspace'.
 ;; 0.4.3: Added support for `autopair'.
 ;; 0.4.2: Added support for `subword-mode'.
