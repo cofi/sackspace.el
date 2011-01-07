@@ -3,8 +3,7 @@
 ;; Copyright (C) 2010 by Michael Markert
 ;; Author: 2010 Michael Markert <markert.michael@googlemail.com>
 ;; Created: 2010/08/01
-;; Version: 0.4.3.1
-;; Time-stamp: <2010-11-27 20:55:39 cofi>
+;; Version: 0.4.4
 
 ;; Keywords: delete
 
@@ -74,6 +73,11 @@ Keys must be strings that can be interpreted by `read-kbd-macro'."
   :type 'boolean
   :group 'sackspace)
 
+(defcustom sack/honor-paredit t
+  "If sackspace should follow `paredit-mode'"
+  :type 'boolean
+  :group 'sackspace)
+
 (defcustom sack/force-viper-install nil
   "Install viper-keys even if `viper-vi-style-in-minibuffer' is non-nil.
 WARNING: This maybe leads to unwanted behavior."
@@ -131,9 +135,10 @@ Honors autopair (if enabled)."
   "Delete preceding space or chars.
 Delete up to `count' times `tab-width' preceding spaces.
 On preceding non-space delete up to `count' chars.
-Honors autopair (if enabled)."
+Honors paredit (if enabled) and autopair (if enabled) in that order."
   (interactive "p")
-  (unless (sack/autopair-backspace)
+  (unless (or (sack/paredit-backspace count)
+              (sack/autopair-backspace))
     (let* ((start (point))
            (tab-off (mod (current-column)
                          (* count tab-width)))
@@ -159,19 +164,24 @@ Kills at least 1 char if `always-delete' is set (including non-whitespace)."
 (defun sack/autopair-backspace ()
   "Emulates `autopair-backspace'.
 Takes action only if `sack/honor-autopair' is non-nil."
-  (if (and sack/honor-autopair (bound-and-true-p autopair-mode)
-         (autopair-find-pair (char-before)))
-      (progn
-        (setq autopair-action (list 'backspace (autopair-find-pair (char-before)) (point)))
-        (autopair-default-handle-action 'backspace (autopair-find-pair (char-before)) (point))
-        (backward-delete-char 1)
-        t)                              ; need to signal fun was successful 
-    nil))
+  (when (and sack/honor-autopair (bound-and-true-p autopair-mode)
+           (autopair-find-pair (char-before)))
+    (setq autopair-action (list 'backspace (autopair-find-pair (char-before)) (point)))
+    (autopair-default-handle-action 'backspace (autopair-find-pair (char-before)) (point))
+    (backward-delete-char 1)
+    t))                                 ; need to signal fun was successful 
+
+(defun sack/paredit-backspace (&optional count)
+  "Call `paredit-backward-delete' if we honor paredit."
+  (when (and sack/honor-paredit (bound-and-true-p paredit-mode))
+    (paredit-backward-delete count)
+    t))                                 ; need to signal fun was successful 
 
 (provide 'sackspace)
 ;; sackspace.el ends here
 
 ;; Changelog
+;; 0.4.4: Added support for `paredit'.
 ;; 0.4.3.1: Fixed `autopair-backspace'.
 ;; 0.4.3: Added support for `autopair'.
 ;; 0.4.2: Added support for `subword-mode'.
