@@ -13,12 +13,12 @@
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 2 of the License, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with GNU Emacs; see the file COPYING.  If not, write to the
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
@@ -170,13 +170,13 @@ Takes action only if `sack/honor-autopair' is non-nil."
     (setq autopair-action (list 'backspace (autopair-find-pair (char-before)) (point)))
     (autopair-default-handle-action 'backspace (autopair-find-pair (char-before)) (point))
     (backward-delete-char 1)
-    t))                                 ; need to signal fun was successful 
+    t))                                 ; need to signal fun was successful
 
 (defun sack/paredit-backspace (&optional count)
   "Call `paredit-backward-delete' if we honor paredit."
   (when (and sack/honor-paredit (bound-and-true-p paredit-mode))
     (paredit-backward-delete count)
-    t))                                 ; need to signal fun was successful 
+    t))                                 ; need to signal fun was successful
 
 (provide 'sackspace)
 ;; sackspace.el ends here
