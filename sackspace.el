@@ -1,9 +1,9 @@
 ;; sackspace.el --- a better backspace
 
-;; Copyright (C) 2010 by Michael Markert
+;; Copyright (C) 2010 2011 by Michael Markert
 ;; Author: 2010 Michael Markert <markert.michael@googlemail.com>
 ;; Created: 2010/08/01
-;; Version: 0.4.4
+;; Version: 0.5
 
 ;; Keywords: delete
 
