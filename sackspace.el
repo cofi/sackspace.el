@@ -150,16 +150,17 @@ Honors paredit (if enabled) and autopair (if enabled) in that order."
           (delete-region (point) start)
         (backward-delete-char count)))))
 
-(defun sack/whitespace (&optional always-delete)
-  "Kill all whitespace before point.
-Kills at least 1 char if `always-delete' is set (including non-whitespace)."
+(defun sack/whitespace (&optional cross-line)
+  "Kill all whitespace -- except end of lines -- before point.
+Also kills end of lines when called with prefix."
   (interactive "P")
-  (let ((start (point)))
-    (skip-chars-backward " \t\r\n")
+  (let ((start (point))
+        (whitespace (if cross-line
+                        " \t\r\n"
+                      " \t")))
+    (skip-chars-backward whitespace)
     (if (/= (point) start)
-        (delete-region (point) start)
-      (if always-delete
-          (backward-delete-char 1)))))
+        (delete-region (point) start))))
 
 (defun sack/autopair-backspace ()
   "Emulates `autopair-backspace'.
