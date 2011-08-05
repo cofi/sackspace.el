@@ -3,7 +3,7 @@
 ;; Copyright (C) 2010 2011 by Michael Markert
 ;; Author: 2010 Michael Markert <markert.michael@googlemail.com>
 ;; Created: 2010/08/01
-;; Version: 0.5
+;; Version: 0.5.1
 
 ;; Keywords: delete
 
@@ -93,10 +93,19 @@ Binds selected functions to selected keys in `viper-insert-global-user-map'."
   (if (and viper-vi-style-in-minibuffer
            (not sack/force-viper-install))
     (error "Refuse to install keys, because it could lead to unwanted behavior.\
-Set `sack/force-viper-install' to non-nil if you want it nevertheless."))
+Set `sack/force-viper-install' to non-nil if you want it nevertheless"))
   (mapc (lambda (pair)
           (define-key viper-insert-global-user-map (read-kbd-macro (car pair))
                                                    (cdr pair)))
+        sack/key-bindings))
+
+(defun sack/install-in-evil ()
+  "Install keys appropriate for evil.
+Binds selected functions to selected keys in `evil-insert-state-map'."
+  (interactive)
+  (mapc (lambda (pair)
+          (define-key evil-insert-state-map (read-kbd-macro (car pair))
+                                            (cdr pair)))
         sack/key-bindings))
 
 (defun sack/install-in-emacs ()
