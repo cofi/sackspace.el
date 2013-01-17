@@ -1,4 +1,4 @@
-;; sackspace.el --- a better backspace
+;;; sackspace.el --- A better backspace
 
 ;; Copyright (C) 2010 2011 by Michael Markert
 ;; Author: 2010 Michael Markert <markert.michael@googlemail.com>
@@ -188,10 +188,11 @@ Takes action only if `sack/honor-autopair' is non-nil."
     t))                                 ; need to signal fun was successful
 
 (provide 'sackspace)
-;; sackspace.el ends here
 
 ;; Changelog
 ;; 0.4.4: Added support for `paredit'.
 ;; 0.4.3.1: Fixed `autopair-backspace'.
 ;; 0.4.3: Added support for `autopair'.
 ;; 0.4.2: Added support for `subword-mode'.
+
+;;; sackspace.el ends here
