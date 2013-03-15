@@ -181,10 +181,11 @@ Takes action only if `sack/honor-autopair' is non-nil."
     t))                                 ; need to signal fun was successful
 
 (defmacro sack--protect-evil (&rest body)
-  "Execute `BODY' only in evil's insert state if `evil-mode' is
+  "Execute `BODY' only in evil's insert and emacs state if `evil-mode' is
 non-nil."
   `(when (or (not (bound-and-true-p evil-mode))
-            (and (fboundp 'evil-insert-state-p) (evil-insert-state-p)))
+            (and (fboundp 'evil-insert-state-p) (or (evil-insert-state-p)
+                                                 (evil-emacs-state-p))))
      ,@body))
 
 (provide 'sackspace)
