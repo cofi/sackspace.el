@@ -130,23 +130,25 @@ Bind selected functions to selected keys via `global-set-key'."
 Honors `subword-mode' (if enabled).
 Works for `term-mode'"
   (interactive "p")
-  (if (eq major-mode 'term-mode)
-      (dotimes (_ (or count 1))
-        (term-send-backward-kill-word))
-    (if (and sack/honor-subword (bound-and-true-p subword-mode))
-        (subword-backward-kill count)
-      (funcall sack/backward-word count))))
+  (sack--protect-evil
+   (if (eq major-mode 'term-mode)
+       (dotimes (_ (or count 1))
+         (term-send-backward-kill-word))
+     (if (and sack/honor-subword (bound-and-true-p subword-mode))
+         (subword-backward-kill count)
+       (funcall sack/backward-word count)))))
 
 (defun sack/plain (&optional count)
   "Delete `COUNT' chars.
 Honors autopair (if enabled).
 Works for `term-mode'."
   (interactive "p")
-  (unless (sack/autopair-backspace)
-    (if (eq major-mode 'term-mode)
-        (dotimes (_ (or count 1))
-          (term-send-backspace))
-      (backward-delete-char (or count 1)))))
+  (sack--protect-evil
+   (unless (sack/autopair-backspace)
+     (if (eq major-mode 'term-mode)
+         (dotimes (_ (or count 1))
+           (term-send-backspace))
+       (backward-delete-char (or count 1))))))
 
 (defun sack/plain-space (&optional count)
   "Delete `COUNT' chars (untabify tabs before).
@@ -165,33 +167,35 @@ On preceding non-space delete up to `count' chars.
 Honors paredit (if enabled) and autopair (if enabled) in that order.
 In `term-mode' will only delete one char."
   (interactive "p")
-  (if (eq major-mode 'term-mode)
-        (dotimes (_ (or count 1))
-          (term-send-backspace))
-    (unless (or (sack/paredit-backspace count)
-               (sack/autopair-backspace))
-      (let* ((start (point))
-             (tab-off (mod (current-column)
-                           (* count tab-width)))
-             (max-back (if (= tab-off 0)
-                           (* count tab-width)
-                         tab-off)))
-        (skip-chars-backward " " (- start max-back))
-        (if (/= (point) start)
-            (delete-region (point) start)
-          (backward-delete-char count))))))
+  (sack--protect-evil
+   (if (eq major-mode 'term-mode)
+       (dotimes (_ (or count 1))
+         (term-send-backspace))
+     (unless (or (sack/paredit-backspace count)
+                (sack/autopair-backspace))
+       (let* ((start (point))
+              (tab-off (mod (current-column)
+                            (* count tab-width)))
+              (max-back (if (= tab-off 0)
+                            (* count tab-width)
+                          tab-off)))
+         (skip-chars-backward " " (- start max-back))
+         (if (/= (point) start)
+             (delete-region (point) start)
+           (backward-delete-char count)))))))
 
 (defun sack/whitespace (&optional cross-line)
   "Kill all whitespace -- except end of lines -- before point.
 Also kills end of lines if `CROSS-LINE' is non-nil."
   (interactive "P")
-  (let ((start (point))
-        (whitespace (if cross-line
-                        " \t\r\n"
-                      " \t")))
-    (skip-chars-backward whitespace)
-    (if (/= (point) start)
-        (delete-region (point) start))))
+  (sack--protect-evil
+   (let ((start (point))
+         (whitespace (if cross-line
+                         " \t\r\n"
+                       " \t")))
+     (skip-chars-backward whitespace)
+     (if (/= (point) start)
+         (delete-region (point) start)))))
 
 (defun sack/autopair-backspace ()
   "Emulates `autopair-backspace'.
@@ -208,6 +212,13 @@ Takes action only if `sack/honor-autopair' is non-nil."
   (when (and sack/honor-paredit (bound-and-true-p paredit-mode))
     (paredit-backward-delete count)
     t))                                 ; need to signal fun was successful
+
+(defmacro sack--protect-evil (&rest body)
+  "Execute `BODY' only in evil's insert state if `evil-mode' is
+non-nil."
+  `(when (or (not (bound-and-true-p evil-mode))
+            (and (fboundp 'evil-insert-state-p) (evil-insert-state-p)))
+     ,@body))
 
 (provide 'sackspace)
 ;;; sackspace.el ends here
