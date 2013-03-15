@@ -1,14 +1,12 @@
 Install
 =======
 
-* Put `sackspace.el` into your `load-path` (`make compile` will give you a byte-compiled version)
-* Load file and run `sack/install-in-viper` or `sack/install-in-emacs`.
+* Put `sackspace.el` into your `load-path` (`make compile` will give you a byte-compiled version). Alternatively install it via `package.el` from (Marmalade)[http://marmalade-repo.org/]
+* Use `(sackspace-mode 1)` to enable it
 
 Usage
 =====
 
-You can use `M-x customize-group sackspace` to change the keybindings of
-sack/install-*. 
 
 Keybindings
 -----------
@@ -23,16 +21,15 @@ Shift-Backspace : Delete all whitespace till non-whitespace char is found.
 
 [1] Takes a numeric argument. You can specify how often it will be executed.
 
-Issues with other Packages
+Other Packages
+--------------
+
+Supports `autopair-mode`, `subword-mode`, and `paredit-mode`.
+To disable this support change the "honor" customs in `M-x customize-group RET sackspace RET`.
+
+Supports `evil` directly by disabling itself in non-edit states and re-enabling on edit states.
+
+Issues and limitations
 ==========================
 
-Direct: None.
-
-Indirect:
-
-* Viper
-
-`sack/install-in-viper` will take care that `viper-vi-style-in-minibuffer` is
-nil, but you can circumvent that behavior via `sack/force-viper-install`. But
-note that if you do so it is very likely that you face unwanted behavior (like
-facading the bindings in Ido).
+* Within `term-mode` `sacks/whitespace` won't work (it will delete the chars from the emacs buffer, but not from the terminal).
