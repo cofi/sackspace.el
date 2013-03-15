@@ -124,46 +124,62 @@ Bind selected functions to selected keys via `global-set-key'."
 ;; ==================================================
 
 ;; Functions ========================================
-(defun sack/word (&optional words)
-  "Kill words.
-Honors subword-mode (if enabled)."
-  (interactive "p")
-  (if (and sack/honor-subword (bound-and-true-p subword-mode))
-      (subword-backward-kill words)
-    (funcall sack/backward-word words)))
 
-(defun sack/plain (&optional chars)
-  "Delete `chars' chars.
-Honors autopair (if enabled)."
+(defun sack/word (&optional count)
+  "Kill `COUNT' words.
+Honors `subword-mode' (if enabled).
+Works for `term-mode'"
+  (interactive "p")
+  (if (eq major-mode 'term-mode)
+      (dotimes (_ (or count 1))
+        (term-send-backward-kill-word))
+    (if (and sack/honor-subword (bound-and-true-p subword-mode))
+        (subword-backward-kill count)
+      (funcall sack/backward-word count))))
+
+(defun sack/plain (&optional count)
+  "Delete `COUNT' chars.
+Honors autopair (if enabled).
+Works for `term-mode'."
   (interactive "p")
   (unless (sack/autopair-backspace)
-    (backward-delete-char (or chars 1))))
+    (if (eq major-mode 'term-mode)
+        (dotimes (_ (or count 1))
+          (term-send-backspace))
+      (backward-delete-char (or count 1)))))
 
 (defun sack/plain-space (&optional count)
   "Delete `COUNT' chars (untabify tabs before).
 Honors autopair (if enabled)."
   (interactive "p")
-  (unless (sack/autopair-backspace)
-    (backward-delete-char-untabify (or count 1))))
+  (if (eq major-mode 'term-mode)
+      (dotimes (_ (or count 1))
+        (term-send-backspace))
+    (unless (sack/autopair-backspace)
+      (backward-delete-char-untabify (or count 1)))))
 
 (defun sack/tabstop (&optional count)
   "Delete preceding space or chars.
 Delete up to `COUNT' times `tab-width' preceding spaces.
 On preceding non-space delete up to `count' chars.
-Honors paredit (if enabled) and autopair (if enabled) in that order."
+Honors paredit (if enabled) and autopair (if enabled) in that order.
+In `term-mode' will only delete one char."
   (interactive "p")
-  (unless (or (sack/paredit-backspace count)
-              (sack/autopair-backspace))
-    (let* ((start (point))
-           (tab-off (mod (current-column)
-                         (* count tab-width)))
-           (max-back (if (= tab-off 0)
-                         (* count tab-width)
-                       tab-off)))
-      (skip-chars-backward " " (- start max-back))
-      (if (/= (point) start)
-          (delete-region (point) start)
-        (backward-delete-char count)))))
+  (if (eq major-mode 'term-mode)
+        (dotimes (_ (or count 1))
+          (term-send-backspace))
+    (unless (or (sack/paredit-backspace count)
+               (sack/autopair-backspace))
+      (let* ((start (point))
+             (tab-off (mod (current-column)
+                           (* count tab-width)))
+             (max-back (if (= tab-off 0)
+                           (* count tab-width)
+                         tab-off)))
+        (skip-chars-backward " " (- start max-back))
+        (if (/= (point) start)
+            (delete-region (point) start)
+          (backward-delete-char count))))))
 
 (defun sack/whitespace (&optional cross-line)
   "Kill all whitespace -- except end of lines -- before point.
