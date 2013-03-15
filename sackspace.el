@@ -38,6 +38,12 @@
 ;; Git-Repository: git://github.com/cofi/sackspace.el.git
 
 ;; User-defined Variables ========================================
+
+;;; Commentary:
+;;
+
+;;; Code:
+
 (defgroup sackspace nil
   "A better backspace."
   :tag "Sackspace"
@@ -69,12 +75,12 @@ Keys must be strings that can be interpreted by `read-kbd-macro'."
   :group 'sackspace)
 
 (defcustom sack/honor-autopair t
-  "If sackspace should follow `autopair-mode'"
+  "If sackspace should follow `autopair-mode'."
   :type 'boolean
   :group 'sackspace)
 
 (defcustom sack/honor-paredit t
-  "If sackspace should follow `paredit-mode'"
+  "If sackspace should follow function `paredit-mode'."
   :type 'boolean
   :group 'sackspace)
 
@@ -133,16 +139,16 @@ Honors autopair (if enabled)."
   (unless (sack/autopair-backspace)
     (backward-delete-char (or chars 1))))
 
-(defun sack/plain-space (&optional chars)
-  "Delete `chars' chars (untabify tabs before).
+(defun sack/plain-space (&optional count)
+  "Delete `COUNT' chars (untabify tabs before).
 Honors autopair (if enabled)."
   (interactive "p")
   (unless (sack/autopair-backspace)
-    (backward-delete-char-untabify (or chars 1))))
+    (backward-delete-char-untabify (or count 1))))
 
 (defun sack/tabstop (&optional count)
   "Delete preceding space or chars.
-Delete up to `count' times `tab-width' preceding spaces.
+Delete up to `COUNT' times `tab-width' preceding spaces.
 On preceding non-space delete up to `count' chars.
 Honors paredit (if enabled) and autopair (if enabled) in that order."
   (interactive "p")
@@ -161,7 +167,7 @@ Honors paredit (if enabled) and autopair (if enabled) in that order."
 
 (defun sack/whitespace (&optional cross-line)
   "Kill all whitespace -- except end of lines -- before point.
-Also kills end of lines when called with prefix."
+Also kills end of lines if `CROSS-LINE' is non-nil."
   (interactive "P")
   (let ((start (point))
         (whitespace (if cross-line
@@ -182,17 +188,10 @@ Takes action only if `sack/honor-autopair' is non-nil."
     t))                                 ; need to signal fun was successful
 
 (defun sack/paredit-backspace (&optional count)
-  "Call `paredit-backward-delete' if we honor paredit."
+  "Call `paredit-backward-delete' `COUNT' times if we honor paredit."
   (when (and sack/honor-paredit (bound-and-true-p paredit-mode))
     (paredit-backward-delete count)
     t))                                 ; need to signal fun was successful
 
 (provide 'sackspace)
-
-;; Changelog
-;; 0.4.4: Added support for `paredit'.
-;; 0.4.3.1: Fixed `autopair-backspace'.
-;; 0.4.3: Added support for `autopair'.
-;; 0.4.2: Added support for `subword-mode'.
-
 ;;; sackspace.el ends here
