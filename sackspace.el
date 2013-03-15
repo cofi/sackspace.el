@@ -144,7 +144,7 @@ Honors autopair (if enabled).
 Works for `term-mode'."
   (interactive "p")
   (sack--protect-evil
-   (unless (sack/autopair-backspace)
+   (unless (sack--autopair-backspace)
      (if (eq major-mode 'term-mode)
          (dotimes (_ (or count 1))
            (term-send-backspace))
@@ -157,7 +157,7 @@ Honors autopair (if enabled)."
   (if (eq major-mode 'term-mode)
       (dotimes (_ (or count 1))
         (term-send-backspace))
-    (unless (sack/autopair-backspace)
+    (unless (sack--autopair-backspace)
       (backward-delete-char-untabify (or count 1)))))
 
 (defun sack/tabstop (&optional count)
@@ -171,8 +171,8 @@ In `term-mode' will only delete one char."
    (if (eq major-mode 'term-mode)
        (dotimes (_ (or count 1))
          (term-send-backspace))
-     (unless (or (sack/paredit-backspace count)
-                (sack/autopair-backspace))
+     (unless (or (sack--paredit-backspace count)
+                (sack--autopair-backspace))
        (let* ((start (point))
               (tab-off (mod (current-column)
                             (* count tab-width)))
@@ -197,7 +197,7 @@ Also kills end of lines if `CROSS-LINE' is non-nil."
      (if (/= (point) start)
          (delete-region (point) start)))))
 
-(defun sack/autopair-backspace ()
+(defun sack--autopair-backspace ()
   "Emulates `autopair-backspace'.
 Takes action only if `sack/honor-autopair' is non-nil."
   (when (and sack/honor-autopair (bound-and-true-p autopair-mode)
@@ -207,7 +207,7 @@ Takes action only if `sack/honor-autopair' is non-nil."
     (backward-delete-char 1)
     t))                                 ; need to signal fun was successful
 
-(defun sack/paredit-backspace (&optional count)
+(defun sack--paredit-backspace (&optional count)
   "Call `paredit-backward-delete' `COUNT' times if we honor paredit."
   (when (and sack/honor-paredit (bound-and-true-p paredit-mode))
     (paredit-backward-delete count)
