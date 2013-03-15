@@ -28,16 +28,15 @@
 ;; See http://github.com/cofi/sackspace.el/issues
 
 ;; Install:
-;; Just load file and run `sack/install-in-viper' or `sack/install-in-emacs'.
-;; All `sack' functions are available for use as well.
+;; Put file into load-path and (require 'sackspace).
+
 ;;
 ;; Usage:
-;; See readme.
+;; (sackspace-mode 1)
+;; See (describe-function 'sackspace-mode)
 
 ;; Homepage: http://github.com/cofi/sackspace.el
 ;; Git-Repository: git://github.com/cofi/sackspace.el.git
-
-;; User-defined Variables ========================================
 
 ;;; Commentary:
 ;;
@@ -51,20 +50,15 @@
   :prefix "sack/"
   :group 'convenience)
 
-(defcustom sack/key-bindings '(("<backspace>" . sack/tabstop)
-                               ("C-<backspace>" . sack/word)
-                               ("M-<backspace>" . sack/plain)
-                               ("S-<backspace>" . sack/whitespace))
-  "Keybindings sackspace should install.
-Keys must be strings that can be interpreted by `read-kbd-macro'."
-  :type '(repeat (cons :tag "Keybinding" string (choice (function-item sack/tabstop)
-                                                        (function-item sack/word)
-                                                        (function-item sack/plain)
-                                                        (function-item sack/plain-space)
-                                                        (function-item sack/whitespace))))
-  :group 'sackspace)
+(defvar sack/map (let ((map (make-sparse-keymap "Sackspace")))
+                   (define-key map (kbd "<backspace>")   'sack/tabstop)
+                   (define-key map (kbd "C-<backspace>") 'sack/word)
+                   (define-key map (kbd "M-<backspace>") 'sack/plain)
+                   (define-key map (kbd "S-<backspace>") 'sack/whitespace)
+                   map)
+  "Sackspace mode keymap.")
 
-(defcustom sack/backward-word (function backward-kill-word)
+(defcustom sack/backward-word #'backward-kill-word
   "Function to use for removing a word backward."
   :type 'function
   :group 'sackspace)
@@ -84,46 +78,19 @@ Keys must be strings that can be interpreted by `read-kbd-macro'."
   :type 'boolean
   :group 'sackspace)
 
-(defcustom sack/force-viper-install nil
-  "Install viper-keys even if `viper-vi-style-in-minibuffer' is non-nil.
-WARNING: This maybe leads to unwanted behavior."
-  :type 'boolean
-  :group 'sackspace)
-;; ==================================================
+;;;###autoload
+(define-minor-mode sackspace-mode
+  "Reasonable bindings around the backspace key.
 
-;; Installer ========================================
-(defun sack/install-in-viper ()
-  "Install keys appropriate for viper.
-Binds selected functions to selected keys in `viper-insert-global-user-map'."
-  (interactive)
-  (if (and viper-vi-style-in-minibuffer
-           (not sack/force-viper-install))
-    (error "Refuse to install keys, because it could lead to unwanted behavior.\
-Set `sack/force-viper-install' to non-nil if you want it nevertheless"))
-  (mapc (lambda (pair)
-          (define-key viper-insert-global-user-map (read-kbd-macro (car pair))
-                                                   (cdr pair)))
-        sack/key-bindings))
-
-(defun sack/install-in-evil ()
-  "Install keys appropriate for evil.
-Binds selected functions to selected keys in `evil-insert-state-map'."
-  (interactive)
-  (mapc (lambda (pair)
-          (define-key evil-insert-state-map (read-kbd-macro (car pair))
-                                            (cdr pair)))
-        sack/key-bindings))
-
-(defun sack/install-in-emacs ()
-  "Install keys appropriate for normal Emacs.
-Bind selected functions to selected keys via `global-set-key'."
-  (interactive)
-  (mapc (lambda (pair)
-          (global-set-key (read-kbd-macro (car pair)) (cdr pair)))
-        sack/key-bindings))
-;; ==================================================
-
-;; Functions ========================================
+  \\{sack/map}"
+  :lighter " sack"
+  :group 'sackspace
+  :keymap sack/map
+  :global t
+  (add-hook 'evil-normal-state-entry-hook (lambda () (sackspace-mode -1)))
+  (dolist (hook '(evil-insert-state-entry-hook
+                  evil-emacs-state-entry-hook))
+    (add-hook hook 'sackspace-mode)))
 
 (defun sack/word (&optional count)
   "Kill `COUNT' words.
