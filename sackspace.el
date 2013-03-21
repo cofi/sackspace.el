@@ -68,11 +68,6 @@
   :type 'boolean
   :group 'sackspace)
 
-(defcustom sack/honor-autopair t
-  "If sackspace should follow `autopair-mode'."
-  :type 'boolean
-  :group 'sackspace)
-
 (defcustom sack/honor-paredit t
   "If sackspace should follow function `paredit-mode'."
   :type 'boolean
@@ -107,72 +102,57 @@ Works for `term-mode'"
 
 (defun sack/plain (&optional count)
   "Delete `COUNT' chars.
-Honors autopair (if enabled).
 Works for `term-mode'."
   (interactive "p")
   (sack--protect-evil
-   (unless (sack--autopair-backspace)
-     (if (eq major-mode 'term-mode)
-         (dotimes (_ (or count 1))
-           (term-send-backspace))
-       (backward-delete-char (or count 1))))))
+    (if (eq major-mode 'term-mode)
+        (dotimes (_ (or count 1))
+          (term-send-backspace))
+      (backward-delete-char (or count 1)))))
 
 (defun sack/plain-space (&optional count)
-  "Delete `COUNT' chars (untabify tabs before).
-Honors autopair (if enabled)."
+  "Delete `COUNT' chars (untabify tabs before)."
   (interactive "p")
   (if (eq major-mode 'term-mode)
       (dotimes (_ (or count 1))
         (term-send-backspace))
-    (unless (sack--autopair-backspace)
-      (backward-delete-char-untabify (or count 1)))))
+    (backward-delete-char-untabify (or count 1))))
 
 (defun sack/tabstop (&optional count)
   "Delete preceding space or chars.
 Delete up to `COUNT' times `tab-width' preceding spaces.
 On preceding non-space delete up to `count' chars.
-Honors paredit (if enabled) and autopair (if enabled) in that order.
+Honors paredit (if enabled).
 In `term-mode' will only delete one char."
   (interactive "p")
   (sack--protect-evil
-   (if (eq major-mode 'term-mode)
-       (dotimes (_ (or count 1))
-         (term-send-backspace))
-     (unless (or (sack--paredit-backspace count)
-                (sack--autopair-backspace))
-       (let* ((start (point))
-              (tab-off (mod (current-column)
-                            (* count tab-width)))
-              (max-back (if (= tab-off 0)
-                            (* count tab-width)
-                          tab-off)))
-         (skip-chars-backward " " (- start max-back))
-         (if (/= (point) start)
-             (delete-region (point) start)
-           (backward-delete-char count)))))))
+    (if (eq major-mode 'term-mode)
+        (dotimes (_ (or count 1))
+          (term-send-backspace))
+      (unless (sack--paredit-backspace count)
+        (let* ((start (point))
+               (tab-off (mod (current-column)
+                             (* count tab-width)))
+               (max-back (if (= tab-off 0)
+                             (* count tab-width)
+                           tab-off)))
+          (skip-chars-backward " " (- start max-back))
+          (if (/= (point) start)
+              (delete-region (point) start)
+            (backward-delete-char count)))))))
 
 (defun sack/whitespace (&optional cross-line)
   "Kill all whitespace -- except end of lines -- before point.
 Also kills end of lines if `CROSS-LINE' is non-nil."
   (interactive "P")
-  (sack--protect-evil
-   (let ((start (point))
-         (whitespace (if cross-line
-                         " \t\r\n"
-                       " \t")))
-     (skip-chars-backward whitespace)
-     (if (/= (point) start)
-         (delete-region (point) start)))))
-
-(defun sack--autopair-backspace ()
-  "Emulates `autopair-backspace'.
-Takes action only if `sack/honor-autopair' is non-nil."
-  (when (and sack/honor-autopair (bound-and-true-p autopair-mode)
-           (autopair-find-pair (char-before)))
-    (setq autopair-action (list 'backspace (autopair-find-pair (char-before)) (point)))
-    (autopair-default-handle-action 'backspace (autopair-find-pair (char-before)) (point))
-    (backward-delete-char 1)
-    t))                                 ; need to signal fun was successful
+  (sack--protect-evil count
+    (let ((start (point))
+          (whitespace (if cross-line
+                          " \t\r\n"
+                        " \t")))
+      (skip-chars-backward whitespace)
+      (if (/= (point) start)
+          (delete-region (point) start)))))
 
 (defun sack--paredit-backspace (&optional count)
   "Call `paredit-backward-delete' `COUNT' times if we honor paredit."
