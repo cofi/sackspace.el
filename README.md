@@ -29,7 +29,7 @@ To disable this support change the "honor" customs in `M-x customize-group RET s
 
 Supports `evil` directly by prohibiting edits in non-editing states if evil is enabled.
 
-Issues and limitations
-==========================
+Limitations
+===========
 
 * Within `term-mode` `sacks/whitespace` won't work (it will delete the chars from the emacs buffer, but not from the terminal).
