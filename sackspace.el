@@ -150,13 +150,14 @@ In `term-mode' will only delete one char."
   "Kill all whitespace -- except end of lines -- before point.
 Also kills end of lines if `CROSS-LINE' is non-nil."
   (interactive "P")
-  (sack--protect-evil count
-    (let ((start (point))
-          (whitespace (if cross-line
-                          " \t\r\n"
-                        " \t")))
-      (skip-chars-backward whitespace)
-      (if (/= (point) start)
+  (let* ((start (point))
+         (whitespace (if cross-line
+                         " \t\r\n"
+                       " \t"))
+         (end (progn (skip-chars-backward whitespace) (point)))
+         (count (- end start)))
+    (if (> count 0)
+        (sack--protect-evil count
           (delete-region (point) start)))))
 
 (defun sack--paredit-backspace (&optional count)
