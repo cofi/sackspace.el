@@ -79,30 +79,26 @@
   :lighter " sack"
   :group 'sackspace
   :keymap sack/map
-  :global t
-  (add-hook 'evil-normal-state-entry-hook (lambda () (sackspace-mode -1)))
-  (dolist (hook '(evil-insert-state-entry-hook
-                  evil-emacs-state-entry-hook))
-    (add-hook hook 'sackspace-mode)))
+  :global t)
 
 (defun sack/word (&optional count)
   "Kill `COUNT' words.
 Honors `subword-mode' (if enabled).
 Works for `term-mode'"
   (interactive "p")
-  (sack--protect-evil
-   (if (eq major-mode 'term-mode)
-       (dotimes (_ (or count 1))
-         (term-send-backward-kill-word))
-     (if (and sack/honor-subword (bound-and-true-p subword-mode))
-         (subword-backward-kill count)
-       (funcall sack/backward-word count)))))
+  (sack--protect-evil count
+    (if (eq major-mode 'term-mode)
+        (dotimes (_ (or count 1))
+          (term-send-backward-kill-word))
+      (if (and sack/honor-subword (bound-and-true-p subword-mode))
+          (subword-backward-kill count)
+        (funcall sack/backward-word count)))))
 
 (defun sack/plain (&optional count)
   "Delete `COUNT' chars.
 Works for `term-mode'."
   (interactive "p")
-  (sack--protect-evil
+  (sack--protect-evil count
     (if (eq major-mode 'term-mode)
         (dotimes (_ (or count 1))
           (term-send-backspace))
@@ -123,7 +119,7 @@ On preceding non-space delete up to `count' chars.
 Honors paredit (if enabled).
 In `term-mode' will only delete one char."
   (interactive "p")
-  (sack--protect-evil
+  (sack--protect-evil count
     (if (eq major-mode 'term-mode)
         (dotimes (_ (or count 1))
           (term-send-backspace))
@@ -158,12 +154,17 @@ Also kills end of lines if `CROSS-LINE' is non-nil."
     (paredit-backward-delete count)
     t))                                 ; need to signal fun was successful
 
-(defmacro sack--protect-evil (&rest body)
+(defmacro sack--protect-evil (count &rest body)
   "Execute `BODY' only in evil's insert and emacs state if `evil-mode' is
-non-nil."
-  `(when (or (not (bound-and-true-p evil-mode))
-            (and (fboundp 'evil-insert-state-p) (or (evil-insert-state-p)
-                                                 (evil-emacs-state-p))))
+non-nil.
+If `evil-mode' is non-nil but the state is not an editing state
+call `evil-backward-char' with `count'."
+  (declare (indent defun))
+  `(if (bound-and-true-p evil-mode)
+       (if (or (evil-insert-state-p) (evil-emacs-state-p))
+           (progn
+             ,@body)
+         (evil-backward-char ,count evil-cross-lines (evil-kbd-macro-suppress-motion-error)))
      ,@body))
 
 (provide 'sackspace)
