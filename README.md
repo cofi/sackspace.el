@@ -24,7 +24,7 @@ Shift-Backspace : Delete all whitespace till non-whitespace char is found.
 Other Packages
 --------------
 
-Supports `autopair-mode`, `subword-mode`, and `paredit-mode`.
+Supports `subword-mode`, and `paredit-mode`.
 To disable this support change the "honor" customs in `M-x customize-group RET sackspace RET`.
 
 Supports `evil` directly by disabling itself in non-edit states and re-enabling on edit states.
