@@ -27,7 +27,7 @@ Other Packages
 Supports `subword-mode`, and `paredit-mode`.
 To disable this support change the "honor" customs in `M-x customize-group RET sackspace RET`.
 
-Supports `evil` directly by disabling itself in non-edit states and re-enabling on edit states.
+Supports `evil` directly by prohibiting edits in non-editing states if evil is enabled.
 
 Issues and limitations
 ==========================
