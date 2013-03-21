@@ -1,7 +1,7 @@
 ;;; sackspace.el --- A better backspace
 
 ;; Copyright (C) 2010--2013 Michael Markert
-;; Author: 2010 Michael Markert <markert.michael@googlemail.com>
+;; Author: Michael Markert <markert.michael@googlemail.com>
 ;; Created: 2010/08/01
 ;; Version: 0.7
 
