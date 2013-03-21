@@ -1,7 +1,7 @@
 Install
 =======
 
-* Put `sackspace.el` into your `load-path` (`make compile` will give you a byte-compiled version). Alternatively install it via `package.el` from (Marmalade)[http://marmalade-repo.org/]
+* Put `sackspace.el` into your `load-path` (`make compile` will give you a byte-compiled version). Alternatively install it via `package.el` from [Marmalade](http://marmalade-repo.org/)
 * Use `(sackspace-mode 1)` to enable it
 
 Usage
