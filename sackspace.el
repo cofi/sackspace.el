@@ -172,7 +172,7 @@ If `evil-mode' is non-nil but the state is not an editing state
 call `evil-backward-char' with `count'."
   (declare (indent defun))
   `(if (bound-and-true-p evil-mode)
-       (if (or (evil-insert-state-p) (evil-emacs-state-p))
+       (if (or (minibufferp) (evil-insert-state-p) (evil-emacs-state-p))
            (progn
              ,@body)
          (evil-backward-char ,count evil-cross-lines (evil-kbd-macro-suppress-motion-error)))
