@@ -24,12 +24,10 @@
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
-;; Known Bugs:
-;; See http://github.com/cofi/sackspace.el/issues
+;;; Commentary:
 
 ;; Install:
 ;; Put file into load-path and (require 'sackspace).
-
 ;;
 ;; Usage:
 ;; (sackspace-mode 1)
@@ -38,8 +36,8 @@
 ;; Homepage: http://github.com/cofi/sackspace.el
 ;; Git-Repository: git://github.com/cofi/sackspace.el.git
 
-;;; Commentary:
-;;
+;; Known Bugs:
+;; See http://github.com/cofi/sackspace.el/issues
 
 ;;; Code:
 
