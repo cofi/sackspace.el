@@ -3,7 +3,7 @@
 ;; Copyright (C) 2010--2013 Michael Markert
 ;; Author: Michael Markert <markert.michael@googlemail.com>
 ;; Created: 2010/08/01
-;; Version: 0.8
+;; Version: 0.8.1
 
 ;; Keywords: delete convenience
 
@@ -30,7 +30,7 @@
 ;; Put file into load-path and (require 'sackspace).
 ;;
 ;; Usage:
-;; (sackspace-mode 1)
+;; (global-sackspace-mode 1)
 ;; See (describe-function 'sackspace-mode)
 ;;
 ;; Support for other packages:
