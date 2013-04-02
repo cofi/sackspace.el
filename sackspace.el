@@ -3,7 +3,7 @@
 ;; Copyright (C) 2010--2013 Michael Markert
 ;; Author: Michael Markert <markert.michael@googlemail.com>
 ;; Created: 2010/08/01
-;; Version: 0.7
+;; Version: 0.8
 
 ;; Keywords: delete convenience
 
