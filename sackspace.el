@@ -82,6 +82,13 @@
   :type 'boolean
   :group 'sackspace)
 
+(defcustom sack/ignored-modes '(
+                                minibuffer-inactive-mode
+                                )
+  "Modes where `sackspace-global-mode' should not turn on."
+  :type '(repeat symbol)
+  :group 'sackspace)
+
 ;;;###autoload
 (define-minor-mode sackspace-mode
   "Reasonable bindings around the backspace key.
@@ -89,8 +96,19 @@
   \\{sack/map}"
   :lighter " sack"
   :group 'sackspace
-  :keymap sack/map
-  :global t)
+  :keymap sack/map)
+
+;;;###autoload
+(defun turn-on-sackspace ()
+  "Turn on sackspace."
+  (interactive)
+  (unless (member major-mode sack/ignored-modes)
+    (sackspace-mode t)))
+
+;;;###autoload
+(define-globalized-minor-mode sackspace-global-mode
+  sackspace-mode
+  turn-on-sackspace)
 
 (defun sack/word (&optional count)
   "Kill `COUNT' words.
