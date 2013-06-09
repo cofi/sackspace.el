@@ -84,6 +84,7 @@
 
 (defcustom sack/ignored-modes '(
                                 minibuffer-inactive-mode
+                                calc-mode
                                 )
   "Modes where `sackspace-global-mode' should not turn on."
   :type '(repeat symbol)
