@@ -41,8 +41,9 @@
 ;; * Supports `evil` directly by prohibiting edits in non-editing states if evil is enabled.
 ;;
 ;; Limitations:
-;; * Within `term-mode` `sacks/whitespace` won't work (it will delete the chars from the emacs
-;;   buffer, but not from the terminal).
+;; * Within `term-mode` `sacks/whitespace` won't work (it will delete the chars
+;;   from the emacs buffer, but not from the terminal).
+;; * C-<backspace> and S-<backspace> are not available in a terminal emacs
 
 ;; Homepage: http://github.com/cofi/sackspace.el
 ;; Git-Repository: git://github.com/cofi/sackspace.el.git
