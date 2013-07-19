@@ -61,8 +61,10 @@
 
 (defvar sack/map (let ((map (make-sparse-keymap "Sackspace")))
                    (define-key map (kbd "<backspace>")   'sack/tabstop)
+                   (define-key map (kbd "DEL")           'sack/tabstop)
                    (define-key map (kbd "C-<backspace>") 'sack/word)
                    (define-key map (kbd "M-<backspace>") 'sack/plain)
+                   (define-key map (kbd "M-DEL")         'sack/plain)
                    (define-key map (kbd "S-<backspace>") 'sack/whitespace)
                    map)
   "Sackspace mode keymap.")
