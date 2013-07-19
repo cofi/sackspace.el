@@ -176,11 +176,10 @@ Also kills end of lines if `CROSS-LINE' is non-nil."
          (whitespace (if cross-line
                          " \t\r\n"
                        " \t"))
-         (end (progn (skip-chars-backward whitespace) (point)))
-         (count (- end start)))
-    (if (> count 0)
-        (sack--protect-evil count
-          (delete-region (point) start)))))
+         (move (skip-chars-backward whitespace)))
+    (when (/= move 0)
+        (sack--protect-evil (+ move start)
+          (delete-region (+ move start) start)))))
 
 (defun sack--paredit-backspace (&optional count)
   "Call `paredit-backward-delete' `COUNT' times if we honor paredit."
